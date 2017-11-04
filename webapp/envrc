@@ -14,5 +14,5 @@ export API=http://isu1:8080
 
 export SSL_KEY=/home/isucon/isucon6-final/webapp/ssl/oreore.key
 export SSL_CERT=/home/isucon/isucon6-final/webapp/ssl/oreore.crt
-export PORT=443
+export PORT=8081
 
