@@ -1,0 +1,10 @@
+# API
+
+```sh
+cd src/api
+glide i
+cd ../../
+
+make build
+./api
+```
