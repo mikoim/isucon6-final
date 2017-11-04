@@ -1,0 +1,35 @@
+[Unit]
+Description=ISUCON API
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+RuntimeDirectory=isucon-api
+
+# Environment=ISUCON_DB_HOST=localhost
+# Environment=ISUCON_DB_PORT=3306
+# Environment=ISUCON_DB_USER=isucon7q
+# Environment=ISUCON_DB_PASSWORD=password
+# Environment=ISUCON_DB_NAME=isucon7q
+
+# EnvironmentFile=/opt/isucon/env
+WorkingDirectory=/home/isucon/isucon6-final/webapp/go
+
+Type=simple
+Restart=always
+
+User=isucon
+Group=isucon
+
+# ExecStartPre=
+ExecStart=/home/isucon/isucon6-final/webapp/go/run.sh
+# ExecStartPost=
+
+LimitNOFILE=65536
+LimitNPROC=4096
+LimitAS=infinity
+LimitFSIZE=infinity
+
+[Install]
+WantedBy=multi-user.target
+

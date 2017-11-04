@@ -1,0 +1,18 @@
+export GOPATH=/home/isucon/gopath
+export GOROOT=/home/isucon/go
+mkdir -p $GOPATH/bin
+export PATH=$GOROOT/bin:$GOPATH/bin:/home/isucon/node/bin:$PATH
+
+export ISUCON_ENV=production
+export NODE_ENV=production
+
+export MYSQL_HOST=isu5
+export MYSQL_PORT=3306
+export MYSQL_USER=isucon
+export MYSQL_PASS=isucon
+export API=http://isu1:8080
+
+export SSL_KEY=/home/isucon/isucon6-final/webapp/ssl/oreore.key
+export SSL_CERT=/home/isucon/isucon6-final/webapp/ssl/oreore.crt
+export PORT=443
+
