@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"strconv"
@@ -633,20 +632,5 @@ func main() {
 	mux.HandleFuncC(pat.Get("/api/stream/rooms/:id"), getAPIStreamRoomsID)
 	mux.HandleFuncC(pat.Post("/api/strokes/rooms/:id"), postAPIStrokesRoomsID)
 
-	os.Remove("/tmp/isucon-api.sock")
-	listener, err := net.Listen("unix", "/tmp/isucon-api.sock")
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	defer func() {
-		if err := listener.Close(); err != nil {
-			log.Printf("error: %v", err)
-		}
-	}()
-	os.Chmod("/tmp/isucon-api.sock", 0666)
-
-	if err := http.Serve(listener, mux); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
+	log.Fatal(http.ListenAndServe("0.0.0.0:80", mux))
 }
