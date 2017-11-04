@@ -34,6 +34,8 @@ const options = {
 
 const app = express();
 
+var cache = {"example": {"hash": "123", "svg":"some_image"}}
+
 app.use(express.static('public'));
 
 app.use('/api/*', proxy({ target: apiBaseUrl, changeOrigin: true }));
@@ -41,13 +43,24 @@ app.use('/api/*', proxy({ target: apiBaseUrl, changeOrigin: true }));
 app.get('/img/:id', (req, res) => {
   fetchJson(`${apiBaseUrl}/api/rooms/${req.params.id}`)
     .then((json) => {
-      const svg = renderToStaticMarkup(
-        <Canvas
-          width={json.room.canvas_width}
-          height={json.room.canvas_height}
-          strokes={json.room.strokes}
-        />
-      );
+      if (typeof cache[req.params.id] == 'undefined'
+          || cache[req.params.id]["hash"] != JSON.stringify(json.room.strokes)) {
+          console.log("Generating SVG for room " + req.params.id);
+          var svg = renderToStaticMarkup(
+            <Canvas
+              width={json.room.canvas_width}
+              height={json.room.canvas_height}
+              strokes={json.room.strokes}
+            />
+          );
+          cache[req.params.id] = {
+            "hash": JSON.stringify(json.room.strokes),
+            "svg": svg
+          };
+        } else {
+          var svg = cache[req.params.id]["svg"]
+          console.log(`Reading from cache for ${req.params.id}`)
+        }
       res.type('image/svg+xml').send(
         '<?xml version="1.0" standalone="no"?>' +
         '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
