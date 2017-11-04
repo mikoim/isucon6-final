@@ -20,28 +20,12 @@ const apiBaseUrl = process.env.API;
 if (!apiBaseUrl) {
   throw 'Please set environment variable API=http://...';
 }
-// if (!apiBaseUrl) {
-//   throw 'Please set environment variable API=http://...';
-// }
-// if (!process.env.SSL_KEY) {
-//   throw 'Please set environment variable SSL_KEY=/path/to/server.key';
-// }
-// if (!process.env.SSL_CERT) {
-//   throw 'Please set environment variable SSL_CERT=/path/to/server.crt';
-// }
-
-// const options = {
-//  key: fs.readFileSync(process.env.SSL_KEY),
-//  cert: fs.readFileSync(process.env.SSL_CERT),
-// };
 
 const app = express();
 
 var cache = {"example": {"hash": "123", "svg":"some_image"}}
 
 app.use(express.static('public'));
-
-// app.use('/api/*', proxy({ target: apiBaseUrl, changeOrigin: true }));
 
 app.get('/img/:id', (req, res) => {
   fetchJson(`${apiBaseUrl}/api/rooms/${req.params.id}`)
@@ -121,7 +105,6 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 8081;
-// https.createServer(options, app).listen(PORT);
 app.listen(PORT);
 
 function createHtml(appHtml, scriptTag, csrfToken) {
