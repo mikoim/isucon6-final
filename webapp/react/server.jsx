@@ -122,18 +122,7 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 8081;
 // https.createServer(options, app).listen(PORT);
-// app.listen(PORT);
-
-var socketPath = '/tmp/isucon-app.sock';
-
-try {
-  fs.unlinkSync(socketPath);
-} catch(e) {}
-
-var server = app.listen(socketPath, function(err) {
-  if (err) throw err;
-  fs.chmodSync(socketPath, '666');
-});
+app.listen(PORT);
 
 function createHtml(appHtml, scriptTag, csrfToken) {
   return `<!DOCTYPE html>
