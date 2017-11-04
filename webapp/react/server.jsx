@@ -104,7 +104,7 @@ app.get('*', (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8888;
 app.listen(PORT);
 
 function createHtml(appHtml, scriptTag, csrfToken) {
