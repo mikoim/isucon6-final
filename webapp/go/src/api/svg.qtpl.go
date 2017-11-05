@@ -86,7 +86,7 @@ func StreamSVG(qw422016 *qt422016.Writer, r *Room) {
 			//line svg.qtpl:3
 		}
 		//line svg.qtpl:3
-		qw422016.N().S(`">`)
+		qw422016.N().S(`"></polyline>`)
 		//line svg.qtpl:3
 	}
 	//line svg.qtpl:3
