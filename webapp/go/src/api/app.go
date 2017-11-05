@@ -582,6 +582,46 @@ func postAPIStrokesRoomsID(ctx context.Context, w http.ResponseWriter, r *http.R
 	w.Write(b)
 }
 
+func getImageID(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	idStr := pat.Param(ctx, "id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		outputErrorMsg(w, http.StatusNotFound, "この部屋は存在しません。")
+		return
+	}
+
+	room, err := getRoom(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			outputErrorMsg(w, http.StatusNotFound, "この部屋は存在しません。")
+		} else {
+			outputError(w, err)
+		}
+		return
+	}
+
+	strokes, err := getStrokes(room.ID, 0)
+	if err != nil {
+		outputError(w, err)
+		return
+	}
+
+	for i, s := range strokes {
+		p, err := getStrokePoints(s.ID)
+		if err != nil {
+			outputError(w, err)
+			return
+		}
+		strokes[i].Points = p
+	}
+
+	room.Strokes = strokes
+
+	w.Header().Set("Content-Type", "image/svg+xml; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	WriteSVG(w, room)
+}
+
 func main() {
 	host := os.Getenv("MYSQL_HOST")
 	if host == "" {
@@ -631,6 +671,7 @@ func main() {
 	mux.HandleFuncC(pat.Get("/api/rooms/:id"), getAPIRoomsID)
 	mux.HandleFuncC(pat.Get("/api/stream/rooms/:id"), getAPIStreamRoomsID)
 	mux.HandleFuncC(pat.Post("/api/strokes/rooms/:id"), postAPIStrokesRoomsID)
+	mux.HandleFuncC(pat.Get("/img/:id"), getImageID)
 
 	log.Fatal(http.ListenAndServe("0.0.0.0:9999", mux))
 }

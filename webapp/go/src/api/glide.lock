@@ -1,14 +1,22 @@
-hash: f871937f53b64bb0e7976d98bd39b1b7204a27045d7425f1b9b92bd56b39d3b5
-updated: 2017-11-05T07:44:45.659920361Z
+hash: cbc191448c89612301d403a55361917eb05ae34152091fddc9ab5e5c22df677d
+updated: 2017-11-05T20:34:11.008265934+09:00
 imports:
 - name: github.com/go-redis/redis
   version: d0f86971b5d61de9cebd2616b932acb7ba14d957
+  subpackages:
+  - internal
+  - internal/consistenthash
+  - internal/hashtag
+  - internal/pool
+  - internal/proto
 - name: github.com/go-sql-driver/mysql
   version: a732e14c62dde3285440047bba97581bc472ae18
 - name: github.com/jmoiron/sqlx
   version: 05b81a7d5d38058e42148dc01f17daf4acba4640
   subpackages:
   - reflectx
+- name: github.com/valyala/quicktemplate
+  version: 6abbd1b822699a4925c76df1740b266f17c2c9ae
 - name: goji.io
   version: e1741450ad80d2837134e32ac7b1d0a7a2b11c51
   subpackages:
