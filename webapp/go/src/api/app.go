@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"hash/crc64"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/bwmarrin/snowflake"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -20,8 +22,9 @@ import (
 )
 
 var (
-	dbx *sqlx.DB
-	rds *redis.Client
+	dbx  *sqlx.DB
+	rds  *redis.Client
+	snow *snowflake.Node
 )
 
 type Token struct {
@@ -582,6 +585,17 @@ func postAPIStrokesRoomsID(ctx context.Context, w http.ResponseWriter, r *http.R
 	w.Write(b)
 }
 
+func getNodeID() (int64, error) {
+	hostname, err := os.Hostname()
+	if err != nil {
+		return 0, nil
+	}
+
+	hash := crc64.New(crc64.MakeTable(crc64.ISO))
+	hash.Write([]byte(hostname))
+	return int64(hash.Sum64()), nil
+}
+
 func main() {
 	host := os.Getenv("MYSQL_HOST")
 	if host == "" {
@@ -623,6 +637,15 @@ func main() {
 		DB:       0,
 	})
 	defer rds.Close()
+
+	nodeId, err := getNodeID()
+	if err != nil {
+		log.Fatalf("Failed to create Node ID for Snowflake: %s.", err.Error())
+	}
+	snow, err = snowflake.NewNode(nodeId)
+	if err != nil {
+		log.Fatalf("Failed to create Snowflake: %s.", err.Error())
+	}
 
 	mux := goji.NewMux()
 	mux.HandleFunc(pat.Post("/api/csrf_token"), postAPICsrfToken)

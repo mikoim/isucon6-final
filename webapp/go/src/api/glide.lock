@@ -1,8 +1,16 @@
-hash: f871937f53b64bb0e7976d98bd39b1b7204a27045d7425f1b9b92bd56b39d3b5
-updated: 2017-11-05T07:44:45.659920361Z
+hash: 1014ef806a67d21c9c6ff7e469af4ef344afc0b00740d4dd3faf52cd3d76930e
+updated: 2017-11-05T19:55:52.699748603+09:00
 imports:
+- name: github.com/bwmarrin/snowflake
+  version: 1c0147d077f16f1abd13b630743b41484616ab9a
 - name: github.com/go-redis/redis
   version: d0f86971b5d61de9cebd2616b932acb7ba14d957
+  subpackages:
+  - internal
+  - internal/consistenthash
+  - internal/hashtag
+  - internal/pool
+  - internal/proto
 - name: github.com/go-sql-driver/mysql
   version: a732e14c62dde3285440047bba97581bc472ae18
 - name: github.com/jmoiron/sqlx
