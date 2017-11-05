@@ -13,6 +13,6 @@ export MYSQL_USER=isucon
 export MYSQL_PASS=isucon
 
 # react
-export API=http://isu1:9999
+export API=http://localhost:9999
 export PORT=8888
 
