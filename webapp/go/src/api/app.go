@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"goji.io"
@@ -20,6 +21,7 @@ import (
 
 var (
 	dbx *sqlx.DB
+	rds *redis.Client
 )
 
 type Token struct {
@@ -137,25 +139,16 @@ func getRoom(roomID int64) (*Room, error) {
 }
 
 func getWatcherCount(roomID int64) (int, error) {
-	query := "SELECT COUNT(*) AS `watcher_count` FROM `room_watchers`"
-	query += " WHERE `room_id` = ? AND `updated_at` > CURRENT_TIMESTAMP(6) - INTERVAL 3 SECOND"
-
-	var watcherCount int
-	err := dbx.QueryRow(query, roomID).Scan(&watcherCount)
-	if err != nil && err != sql.ErrNoRows {
-		return 0, err
-	}
-	if err == sql.ErrNoRows {
-		return 0, nil
-	}
-	return watcherCount, nil
+	key := fmt.Sprintf("RoomWatcher-%d", roomID)
+	minScore := strconv.FormatInt(time.Now().Unix()-3, 10)
+	count, err := rds.ZCount(key, minScore, "+inf").Result()
+	return int(count), err
 }
 
 func updateRoomWatcher(roomID int64, tokenID int64) error {
-	query := "INSERT INTO `room_watchers` (`room_id`, `token_id`) VALUES (?, ?)"
-	query += " ON DUPLICATE KEY UPDATE `updated_at` = CURRENT_TIMESTAMP(6)"
-
-	_, err := dbx.Exec(query, roomID, tokenID)
+	key := fmt.Sprintf("RoomWatcher-%d", roomID)
+	score := float64(time.Now().Unix())
+	err := rds.ZAdd(key, redis.Z{Score: score, Member: tokenID,}).Err()
 	return err
 }
 
@@ -623,6 +616,13 @@ func main() {
 		log.Fatalf("Failed to connect to DB: %s.", err.Error())
 	}
 	defer dbx.Close()
+
+	rds = redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", host, "6379"),
+		Password: "",
+		DB:       0,
+	})
+	defer rds.Close()
 
 	mux := goji.NewMux()
 	mux.HandleFunc(pat.Post("/api/csrf_token"), postAPICsrfToken)

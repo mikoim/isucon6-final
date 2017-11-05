@@ -1,6 +1,8 @@
-hash: 22b04034143d423370c71ba3a47ba13a26eac995fccd95d1e4aa73c10ca8dc53
-updated: 2016-09-25T00:33:13.232793673+09:00
+hash: f871937f53b64bb0e7976d98bd39b1b7204a27045d7425f1b9b92bd56b39d3b5
+updated: 2017-11-05T07:44:45.659920361Z
 imports:
+- name: github.com/go-redis/redis
+  version: d0f86971b5d61de9cebd2616b932acb7ba14d957
 - name: github.com/go-sql-driver/mysql
   version: a732e14c62dde3285440047bba97581bc472ae18
 - name: github.com/jmoiron/sqlx
